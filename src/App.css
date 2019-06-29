@@ -21,3 +21,14 @@
 .App-intro {
   font-size: large;
 }
+button {
+  color: red;
+  border-radius: 5px;
+  background-color: white;
+  margin: 10px;
+  padding: 10px;
+}
+
+.delete {
+  padding: 0px 5px;
+}
