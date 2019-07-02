@@ -9,7 +9,7 @@ const URL = "http://localhost:3000/pokemon";
 class PokemonIndex extends React.Component {
   state = {
     pokemons: [],
-    filteredPokemon: []
+    searchTerm: ""
   };
 
   fetchPokemons = () => {
@@ -29,34 +29,31 @@ class PokemonIndex extends React.Component {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(pokemon)
-    })
-    .then(this.setState({ pokemons: [...this.state.pokemons, pokemon] }))
+    }).then(this.setState({ pokemons: [...this.state.pokemons, pokemon] }));
   };
 
-  // onSearchChangeHandler = (event) => {
-  //   if (this.state.pokemons.map(pokemons => pokemons.name.include(event.input.value))) {
-    
-  //   }
-  // }
-
+  onSearchChangeHandler = (event, { value }) => {
+    this.setState({ searchTerm: value });
+  };
 
   render() {
     const { pokemons } = this.state;
+    const filteredPokemon = this.state.pokemons.filter(pokemon =>
+      pokemon.name.includes(this.state.searchTerm)
+    );
     return (
       <div>
         <h1>Pokemon Searcher</h1>
         <br />
+        <PokemonForm postPokemonToServer={this.postPokemonToServer} />
+        <br />
         <Search
-          onSearchChange={_.debounce(() => console.log('Searching...'), 500)}
+          onSearchChange={_.debounce(this.onSearchChangeHandler, 500)}
           showNoResults={false}
         />
         <br />
-        <PokemonCollection pokemons={pokemons} />
+        <PokemonCollection pokemons={filteredPokemon} />
         <br />
-        <PokemonForm
-          postPokemonToServer={this.postPokemonToServer}
-          pokemons={pokemons}
-        />
       </div>
     );
   }
